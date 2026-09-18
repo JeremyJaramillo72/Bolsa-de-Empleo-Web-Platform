@@ -45,31 +45,21 @@ La solución adopta una arquitectura desacoplada y orientada a servicios (SOA) e
 
 ```mermaid
 flowchart TD
-    subgraph CapaCliente["Capa de Presentación (Frontend SPA)"]
-        SPA["Angular 21 SPA\n(Componentes Modulares / Tailwind CSS / Chart.js / StompJS)"]
-    end
+    SPA["Frontend Web<br/>Angular 21 SPA"]
+    Gateway["Pasarela de Seguridad<br/>Spring Security con JWT y OAuth 2.0"]
+    API["Capa de Negocio y Controladores<br/>Spring Boot REST Services"]
+    AI["Servicio Cognitivo<br/>Google Gemini AI"]
+    Cache["Capa de Rendimiento<br/>Caffeine Cache"]
+    DB[("Base de Datos Relacional<br/>PostgreSQL Multi-Esquema")]
+    Storage["Almacenamiento Multimedia<br/>Cloudinary CDN"]
 
-    subgraph CapaServicios["Capa de Negocio y APIs (Backend)"]
-        Gateway["Spring Boot Security\n(Filtros JWT / Google OAuth 2.0 / CORS)"]
-        Controllers["Controladores RESTful\n(Postulantes / Empresas / Ofertas / Catálogos)"]
-        Services["Capa de Lógica de Negocio\n(Servicios Transaccionales / Matching)"]
-        AIService["Gemini AI Service\n(Optimización de Perfiles y Ofertas)"]
-        Cache["Caffeine Cache\n(Optimización de Consultas a Catálogos)"]
-    end
-
-    subgraph CapaDatos["Capa de Persistencia y Almacenamiento"]
-        DB[("PostgreSQL Multi-Esquema\n(usuarios / ofertas / empresas / postulaciones / catalogos / seguridad)")]
-        Cloudinary["Cloudinary Storage\n(Almacenamiento Seguro de Logos y Fotos de Perfil)"]
-    end
-
-    SPA <-->|"HTTPS / REST (JWT Bearer)"| Gateway
-    SPA <-->|"WebSocket / STOMP"| Gateway
-    Gateway --> Controllers
-    Controllers --> Services
-    Services --> AIService
-    Services --> Cache
-    Services <-->|"Spring Data JPA / HikariCP"| DB
-    Services <-->|"API REST"| Cloudinary
+    SPA -->|HTTPS / JWT| Gateway
+    SPA -->|WebSocket / STOMP| Gateway
+    Gateway --> API
+    API --> AI
+    API --> Cache
+    API -->|Spring Data JPA| DB
+    API -->|API REST| Storage
 ```
 
 ### Principios de Arquitectura
